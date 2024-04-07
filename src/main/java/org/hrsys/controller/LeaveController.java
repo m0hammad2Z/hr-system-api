@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class LeaveController {
     @PostMapping("/apply")
     public ResponseEntity<ApiResponse<LeaveDTO>> applyForLeave(@Validated(OnCreate.class) @RequestBody LeaveDTO leave) {
         Leave leaveToApply = modelMapper.map(leave, Leave.class);
-        Leave createdLeave = leaveService.applyForLeave(leaveToApply.getEmployee(), leave.getStartDate(), leave.getEndDate());
+        Leave createdLeave = leaveService.applyForLeave(leave.getStartDate(), leave.getEndDate());
         LeaveDTO leaveDTO = modelMapper.map(createdLeave, LeaveDTO.class);
         ApiResponse<LeaveDTO> apiResponse = new ApiResponse<>(true, "Leave applied successfully", leaveDTO);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
@@ -61,11 +60,10 @@ public class LeaveController {
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
-    @GetMapping("/{employeeId}")
-    public ResponseEntity<ApiResponse<List<LeaveDTO>>> getMyLeavesByDate(@PathVariable Long employeeId,
-                                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+    @GetMapping("/myLeaves")
+    public ResponseEntity<ApiResponse<List<LeaveDTO>>> getMyLeavesByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<Leave> leaves = leaveService.getMyLeavesByDate(employeeId, startDate, endDate);
+        List<Leave> leaves = leaveService.getMyLeavesByDate(startDate, endDate);
         List<LeaveDTO> leaveDTOs = modelMapper.map(leaves, new TypeToken<List<LeaveDTO>>() {}.getType());
         ApiResponse<List<LeaveDTO>> apiResponse = new ApiResponse<>(true, "Leaves fetched successfully", leaveDTOs);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);

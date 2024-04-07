@@ -6,7 +6,6 @@ import org.hrsys.exception.NotAuthoriseException;
 import org.hrsys.exception.ResourceNotFoundException;
 import org.hrsys.model.Employee;
 import org.hrsys.model.Leave;
-import org.hrsys.model.Manager;
 import org.hrsys.repository.EmployeeRepository;
 import org.hrsys.repository.LeaveRepository;
 import org.hrsys.repository.ManagerRepository;
@@ -34,9 +33,15 @@ public class LeaveService {
 
     //Apply for leave
     @Transactional
-    public Leave applyForLeave(Employee employee, LocalDate startDate, LocalDate endDate) {
-        validateEmployee(employee); //Check if employee exists
+    public Leave applyForLeave(LocalDate startDate, LocalDate endDate) {
         validateDates(startDate, endDate); //Check if dates are valid
+
+        // Get the authenticated employee
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Employee employee = Optional.ofNullable(employeeRepository.findByEmail(email))
+                .orElseThrow(() -> new ResourceNotFoundException("Employee"));
+
         // Fetch the employee from the database
         employee = employeeRepository.findById(employee.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee"));
@@ -101,25 +106,18 @@ public class LeaveService {
 
     // Get leaves by date
     @Transactional(readOnly = true)
-    public List<Leave> getMyLeavesByDate(Long employeeId, LocalDate startDate, LocalDate endDate) {
-        validateEmployeeId(employeeId); // Validate the employee ID
+    public List<Leave> getMyLeavesByDate(LocalDate startDate, LocalDate endDate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // Get the authenticated employee's email
+        System.out.println(email);
+
+        // Fetch the authenticated employee from the database
+        Employee employee = Optional.ofNullable(employeeRepository.findByEmail(email))
+                .orElseThrow(() -> new ResourceNotFoundException("Employee"));
+
         validateDates(startDate, endDate); // Validate the dates
         // Fetch the leaves from the database
-        return leaveRepository.findByEmployeeIdAndStartDateGreaterThanEqualAndEndDateLessThanEqual(employeeId, startDate, endDate);
-    }
-
-    // Method to validate an employee
-    private void validateEmployee(Employee employee) {
-        if (employee == null || employee.getId() == null || !employeeRepository.existsById(employee.getId())) {
-            throw new ResourceNotFoundException("Employee not found");
-        }
-    }
-
-    // Method to validate an employee ID
-    private void validateEmployeeId(Long id) {
-        if (id == null || !employeeRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Employee", id);
-        }
+        return leaveRepository.findByEmployeeIdAndStartDateGreaterThanEqualAndEndDateLessThanEqual(employee.getId(), startDate, endDate);
     }
 
     // Method to validate dates
