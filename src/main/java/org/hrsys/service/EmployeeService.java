@@ -80,7 +80,6 @@ public class EmployeeService {
 
     @Transactional(readOnly = true)
     public Employee getEmployeeById(Long id) {
-        validateEmployeeId(id);
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee", id));
     }
@@ -89,11 +88,9 @@ public class EmployeeService {
     public Employee updateEmployee(Employee employee) {
         // Validate the employee
         validateEmployee(employee);
-        // Validate the employee ID
-        validateEmployeeId(employee.getId());
 
         // Optimistic locking
-        if(employee.getVersion() == null || employeeRepository.findById(employee.getId()).get().getVersion() != employee.getVersion()){
+        if(employee.getVersion() == null || !Objects.equals(employeeRepository.findById(employee.getId()).get().getVersion(), employee.getVersion())){
             throw new InvalidRequestException("The provided version does not match the current version");
         }
 
@@ -180,12 +177,7 @@ public class EmployeeService {
         }
     }
 
-    // Method to validate an employee ID
-    private void validateEmployeeId(Long id) {
-        if (id == null || !employeeRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Employee", id);
-        }
-    }
+
 
     // Method to update an existing employee
     private void updateExistingEmployee(Employee existing, Employee employee) {
@@ -193,7 +185,7 @@ public class EmployeeService {
         existing.setName(Optional.ofNullable(employee.getName()).orElse(existing.getName()));
 
         // Check if the email is not already in use
-        if (!employee.getEmail().equals(existing.getEmail()) && employeeRepository.findByEmail(employee.getEmail()) != null) {
+        if ( Objects.nonNull(employee.getEmail()) && !employee.getEmail().equals(existing.getEmail()) && employeeRepository.findByEmail(employee.getEmail()) != null) {
             throw new InvalidRequestException("The specified email is already in use.");
         }
         existing.setEmail(Optional.ofNullable(employee.getEmail()).orElse(existing.getEmail()));
@@ -207,7 +199,7 @@ public class EmployeeService {
         }
 
         if (employee.getManager() != null) {
-            Manager manager = managerRepository.findById(employee.getManager().getEmployeeId())
+            Manager manager = managerRepository.findByEmployeeId(employee.getManager().getEmployeeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Manager", employee.getManager().getEmployeeId()));
             existing.setManager(manager);
         }
