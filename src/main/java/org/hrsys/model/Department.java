@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hrsys.validation.OnCreate;
 import org.hrsys.validation.OnUpdate;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.List;
 
 @Entity

@@ -16,7 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.modelmapper.ModelMapper;
 
-import javax.validation.Valid;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,7 +40,6 @@ public class EmployeeController {
         Employee employee = modelMapper.map(employeeDTO, Employee.class);
         Employee createdEmployee = employeeService.createEmployee(employee);
         EmployeeDTO createdEmployeeDTO = modelMapper.map(createdEmployee, EmployeeDTO.class);
-        System.out.println(createdEmployeeDTO);
         ApiResponse<EmployeeDTO> apiResponse = new ApiResponse<>(true, "Employee created successfully", createdEmployeeDTO);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }

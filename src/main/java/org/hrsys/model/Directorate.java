@@ -2,8 +2,8 @@ package org.hrsys.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.List;
 import org.hrsys.validation.OnCreate;
 import org.hrsys.validation.OnUpdate;

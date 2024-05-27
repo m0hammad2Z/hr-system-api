@@ -2,8 +2,8 @@ package org.hrsys.model;
 
 import org.hrsys.validation.OnCreate;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "roles")

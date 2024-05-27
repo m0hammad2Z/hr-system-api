@@ -10,6 +10,8 @@ import org.hrsys.repository.DirectorateRepository;
 import org.hrsys.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,7 +31,7 @@ public class DepartmentService {
         this.employeeService = employeeService;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public Department createDepartment(Department department) {
         if(department == null) {
             throw new InvalidRequestException("Department must not be null");
@@ -48,18 +50,18 @@ public class DepartmentService {
 
 
     // Get all departments
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<Department> getAllDepartments() {
         return departmentRepository.findAll();
     }
 
     // Get department by directorate
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<Department> getDepartmentsByDirectorate(Long directorateId) {
         return departmentRepository.findByDirectorateId(directorateId);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public Department updateDepartment(Department department) {
         if (department == null) {
             throw new InvalidRequestException("Department must not be null");
@@ -76,7 +78,7 @@ public class DepartmentService {
         return departmentRepository.save(existingDepartment);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED)
     public void deleteDepartment(Long id, Long newDepartmentId) {
         if (id == null || newDepartmentId == null) {
             throw new InvalidRequestException("Department id and new department id must not be null");

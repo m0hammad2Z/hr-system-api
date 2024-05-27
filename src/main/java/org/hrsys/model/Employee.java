@@ -2,11 +2,11 @@ package org.hrsys.model;
 
 import com.fasterxml.jackson.annotation.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import org.hrsys.validation.OnCreate;
 import org.hrsys.validation.OnUpdate;
 

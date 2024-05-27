@@ -1,8 +1,10 @@
 package org.hrsys.service;
 
+import jakarta.persistence.EntityManager;
 import org.hrsys.model.Employee;
 import org.hrsys.repository.EmployeeRepository;
 import org.hrsys.util.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,19 +12,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
+public class CUserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
-    private final EmployeeRepository employeeRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
-    public UserDetailsService(EmployeeRepository employeeRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.employeeRepository = employeeRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
+    // Get employee by email
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Employee employee = findEmployeeByEmail(username); // find employee by email
+        Employee employee = findEmployeeByEmail(username);
         return User.withUsername(employee.getEmail())
                 .password(employee.getPassword())
                 .authorities(employee.getRole().getName())
@@ -30,11 +28,8 @@ public class UserDetailsService implements org.springframework.security.core.use
     }
 
     // Generate token for the user with the given email and password
-    public String generateToken(String email, String password) {
+    public String generateToken(String email) {
         Employee employee = findEmployeeByEmail(email);
-        if (!bCryptPasswordEncoder.matches(password, employee.getPassword())) {
-            throw new UsernameNotFoundException("User not found with email: " + email);
-        }
         return JwtUtil.generateToken(email, employee.getRole().getName());
     }
 

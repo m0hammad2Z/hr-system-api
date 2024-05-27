@@ -15,7 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.List;
 
 @RestController

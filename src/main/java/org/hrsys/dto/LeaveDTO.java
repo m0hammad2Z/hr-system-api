@@ -4,7 +4,8 @@ import org.hrsys.enums.LeaveStatus;
 import org.hrsys.validation.OnCreate;
 import org.hrsys.validation.OnUpdate;
 
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 public class LeaveDTO {
     @NotNull(groups = {OnUpdate.class}, message = "ID is mandatory")

@@ -4,8 +4,8 @@ import org.hrsys.validation.OnUpdate;
 
 
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 public class RoleDTO {
     private Long roleId;

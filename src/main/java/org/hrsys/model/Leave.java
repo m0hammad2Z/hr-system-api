@@ -3,9 +3,8 @@ package org.hrsys.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hrsys.enums.LeaveStatus;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;import org.hrsys.validation.OnCreate;
 import org.hrsys.validation.OnUpdate;
 

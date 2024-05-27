@@ -1,12 +1,13 @@
 package org.hrsys.util;
 
 
+import jakarta.annotation.PostConstruct;
 import org.hrsys.model.*;
 import org.hrsys.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+
 import java.time.LocalDate;
 
 @Component

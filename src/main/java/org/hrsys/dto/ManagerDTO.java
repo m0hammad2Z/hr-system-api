@@ -3,8 +3,8 @@ package org.hrsys.dto;
 import org.hrsys.validation.OnCreate;
 import org.hrsys.validation.OnUpdate;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.List;
 
 public class ManagerDTO {

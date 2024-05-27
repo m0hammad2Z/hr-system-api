@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hrsys.validation.OnCreate;
 import org.hrsys.validation.OnUpdate;
 
-import javax.validation.constraints.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 public class EmployeeDTO {
